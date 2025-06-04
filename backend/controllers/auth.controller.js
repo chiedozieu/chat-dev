@@ -86,36 +86,39 @@ export const login = async (req, res) => {
 };
 // logout
 export const logout = async (req, res) => {
- try {
-     res.cookie("jwt", "", {
-       maxAge: 0,
-     });
-     res.status(200).json({ message: "User logged out successfully" });
- } catch (error) {
-     console.log("Error in logout controller", error?.message);
-     res.status(500).json({ message: "Server error" });
-    
- }
+  try {
+    res.cookie("jwt", "", {
+      maxAge: 0,
+    });
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.log("Error in logout controller", error?.message);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 // update profile
 export const updateProfile = async (req, res) => {
-  const {  profilePic } = req.body;
+  const { profilePic } = req.body;
   try {
-   const userId = req.user._id
+    const userId = req.user._id;
 
-   if(!profilePic){
-    res.status(400).json({ message: "Profile picture is required" });
-   }
-   const uploadResponse =await cloudinary.uploader.upload(profilePic);
-   const updatedUser = await User.findByIdAndUpdate(userId, {
-     profilePic: uploadResponse.secure_url
-   }, { new: true });
-   
-   res.status(200).json({
-     message: "Profile updated successfully",
-     updatedUser
-   })
+    if (!profilePic) {
+      res.status(400).json({ message: "Profile picture is required" });
+    }
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        profilePic: uploadResponse.secure_url,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      updatedUser,
+    });
   } catch (error) {
     console.log("Error in update profile controller", error?.message);
     res.status(500).json({ message: "Server error" });
@@ -124,8 +127,6 @@ export const updateProfile = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
-    
-
     res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller", error?.message);
