@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
@@ -45,7 +46,7 @@ export const signup = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Error in signup", error);
+    console.log("Error in signup controller", error?.message);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -79,11 +80,11 @@ export const login = async (req, res) => {
       res.status(400).json({ message: "Invalid password" });
     }
   } catch (error) {
-    console.log("Error in login", error);
+    console.log("Error in login controller", error?.message);
     res.status(500).json({ message: "Server error" });
   }
 };
-
+// logout
 export const logout = async (req, res) => {
  try {
      res.cookie("jwt", "", {
@@ -91,31 +92,43 @@ export const logout = async (req, res) => {
      });
      res.status(200).json({ message: "User logged out successfully" });
  } catch (error) {
-     console.log("Error in logout", error);
+     console.log("Error in logout controller", error?.message);
      res.status(500).json({ message: "Server error" });
     
  }
 };
 
+// update profile
 export const updateProfile = async (req, res) => {
   const {  profilePic } = req.body;
   try {
-    const user = await User.findById(req.user);
-    if (!user) {
-      res.status(400).json({ message: "User not found" });
-    }
+   const userId = req.user._id
+
+   if(!profilePic){
+    res.status(400).json({ message: "Profile picture is required" });
+   }
+   const uploadResponse =await cloudinary.uploader.upload(profilePic);
+   const updatedUser = await User.findByIdAndUpdate(userId, {
+     profilePic: uploadResponse.secure_url
+   }, { new: true });
    
-    user.profilePic = profilePic;
-    await user.save();
-    res.status(200).json({
-      message: "User profile updated successfully",
-      _id: user._id,
-      fullName: user.fullName,
-      email: user.email,
-      profilePic: user.profilePic,
-    });
+   res.status(200).json({
+     message: "Profile updated successfully",
+     updatedUser
+   })
   } catch (error) {
-    console.log("Error in update profile", error);
+    console.log("Error in update profile controller", error?.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  try {
+    
+
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error?.message);
     res.status(500).json({ message: "Server error" });
   }
 };
