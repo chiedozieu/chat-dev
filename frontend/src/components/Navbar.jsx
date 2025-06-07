@@ -22,6 +22,9 @@ const Navbar = () => {
                 Nabata
               </div>
             </Link>
+            {/* { */}
+            {/* authUser &&  */}
+
             {/* <div className="flex items-center gap-4">
               <Link to="/signup" className="hover:opacity-80 transition-all">
                 <span className="text-sm">Signup</span>
@@ -30,31 +33,36 @@ const Navbar = () => {
                 <span className="text-sm">Login</span>
               </Link>
             </div> */}
+            {/* } */}
           </div>
           {/* right part */}
           <div className="flex items-center gap-2">
-           
-            <Link to="/settings" className={`btn btn-sm transition-color group`}>
+            <Link
+              to="/settings"
+              className={`btn btn-sm transition-color group`}
+            >
               <Settings className="size-4 transition-all group-hover:animate-spin" />
               <span className="hidden sm:inline">Settings</span>
             </Link>
 
-            { 
-              authUser &&
-             ( <>
-                <Link to="/profile" className={`btn btn-sm transition-color gap-2`}>
-                <User className="size-4"/>
-                <span className="hidden sm:inline capitalize">profile</span>
-                            </Link>
-                            <button
-                className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-all"
-                onClick={() => logout()}
-                            >
-                            <LogOut className="size-4"/>
-                <span className="hidden sm:inline">Logout</span>
-                            </button>
-              </>)
-            }
+            {authUser && (
+              <>
+                <Link
+                  to="/profile"
+                  className={`btn btn-sm transition-color gap-2`}
+                >
+                  <User className="size-4" />
+                  <span className="hidden sm:inline capitalize">profile</span>
+                </Link>
+                <button
+                  className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-all"
+                  onClick={() => logout()}
+                >
+                  <LogOut className="size-4" />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
